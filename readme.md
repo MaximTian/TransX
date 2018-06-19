@@ -11,7 +11,7 @@
 - 代码复现过程中，我根据自己的理解对源C++代码进行了部分修改，剔除了一些冗余和不合理的代码：
   1.  Mean-Rank和Hits@10采用了改进的版本，在评测未知关系三元组过程中，对已知正确的三元组在评测过程剔除。关于TransE评测指标更详细的介绍可参考这篇文章 [TransE评测方法](https://xiangrongzeng.github.io/knowledge%20graph/transE-evaluation.html)
   2.  删除C++版本的一些冗余参数
-  3. PTransE中关于路径的计算，没有计算了源代码反向的路径，如$(A, relation, B) -> (B, relation^{-1}, A)$ ，以及PTransE_Test沿用TransE的代码，与TransE评测一致
+  3. PTransE中关于路径的计算，没有计算了源代码反向的路径，如$(A, relation, B) -> (B, relation^{-1}, A)$ 。PTransE_Test沿用TransE的代码，与TransE评测一致
 
 ### 代码的原理来源于几篇TransE相关的论文
 
