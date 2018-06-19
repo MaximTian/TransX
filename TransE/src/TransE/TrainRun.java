@@ -44,6 +44,7 @@ public class TrainRun {
         BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f),"UTF-8"));
         String line;
         while ((line = reader.readLine()) != null) {
+            System.out.println(line);
             String[] split_data = line.split("\t");
             String head = split_data[0];
             String tail = split_data[1];

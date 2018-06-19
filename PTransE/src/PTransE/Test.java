@@ -1,9 +1,10 @@
-package TransE;
+package PTransE;
+
 import java.io.*;
 import java.util.*;
 
-import static TransE.GlobalValue.*;
-import static TransE.Gradient.calc_sum;
+import static PTransE.GlobalValue.*;
+import static PTransE.Gradient.calc_sum;
 
 public class Test {
     // region private members
@@ -26,7 +27,7 @@ public class Test {
          * flag=true 表示该三元组关系正确
          */
         if (flag) {
-            TransE.Pair<Integer, Integer> key = new Pair<>(head, relation);
+            Pair<Integer, Integer> key = new Pair<>(head, relation);
             if (!head_relation2tail.containsKey(key)) {
                 head_relation2tail.put(key, new HashSet<>());
             }
@@ -88,8 +89,8 @@ public class Test {
         relation_vec = new double[relation_num][vector_len];
         entity_vec = new double[entity_num][vector_len];
 
-        Read_Vec_File("resource/result/relation2vec.bern", relation_vec);
-        Read_Vec_File("resource/result/entity2vec.bern", entity_vec);
+        Read_Vec_File("resource/result/relation2vec.txt", relation_vec);
+        Read_Vec_File("resource/result/entity2vec.txt", entity_vec);
 
         int lsum = 0, rsum = 0;
         int lp_n = 0, rp_n = 0;
