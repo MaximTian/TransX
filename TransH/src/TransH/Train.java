@@ -29,6 +29,12 @@ public class Train {
 
     private void Write_Vec2File(String file_name, double[][] vec, int number) throws IOException {
         File f = new File(file_name);
+        File f = new File(file_name);
+        if (!f.exists()) {	// if file does not exist, then create it
+            File dir = new File(f.getParent());
+            dir.mkdirs();
+            f.createNewFile();
+        }
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
         for (int i = 0; i < number; i++) {
             for (int j = 0; j < vector_dimension; j++) {
