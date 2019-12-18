@@ -36,7 +36,7 @@ public class Utils {
         return min + (max - min) * Math.random();
     }
 
-    static double vec_len(double[] a, int vec_size) {
+    static double vectorLen(double[] a, int vec_size) {
         // calculate the length of the vector
         double res = 0;
         for (int i = 0; i < vec_size; i++) {
@@ -47,7 +47,7 @@ public class Utils {
 
     static void norm(double[] a, int vec_size) {
         // limit the element a under 1
-        double x = vec_len(a, vec_size);
+        double x = vectorLen(a, vec_size);
         if (x > 1) {
             for (int i = 0; i < vec_size; i++) {
                 a[i] /= x;

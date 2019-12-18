@@ -1,5 +1,5 @@
-import TransE.TestRun;
-import TransE.TrainRun;
+import TransE.TestPrepare;
+import TransE.TrainPrepare;
 
 import java.io.*;
 import java.util.Scanner;
@@ -7,16 +7,16 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-        System.out.println("Train or test? y/n");
+        System.out.println("Train or test? y/n");  //  训练还是测试
         Scanner sc = new Scanner(System.in);
         boolean train_flag;
         train_flag = sc.next().equals("y");
         if (train_flag) {
             System.out.println("Begin train");
-            TrainRun.train_run();
+            TrainPrepare.train_run();
         } else {
             System.out.println("Begin test");
-            TestRun.test_run();
+            TestPrepare.test_run();
         }
     }
 

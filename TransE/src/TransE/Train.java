@@ -24,8 +24,13 @@ public class Train {
         head_relation2tail = new HashMap<>();
     }
 
-    private void Write_Vec2File(String file_name, double[][] vec, int number) throws IOException {
+    private void Write_Vec2File(String file_name, double[][] vec, int number) throws IOException {  // 将向量写出到相关文件中
         File f = new File(file_name);
+        if (!f.exists()) {	// if file does not exist, then create it
+            File dir = new File(f.getParent());
+            dir.mkdirs();
+            f.createNewFile();
+        }
         OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
         for (int i = 0; i < number; i++) {
             for (int j = 0; j < vector_len; j++) {
@@ -37,7 +42,7 @@ public class Train {
         }
     }
 
-    private void bfgs(int nepoch, int nbatches) throws IOException {
+    private void bfgs(int nepoch, int nbatches) throws IOException {  // 随机梯度下降
         int batchsize = fb_h.size() / nbatches;
         System.out.printf("Batch size = %s\n", batchsize);
         for (int epoch = 0; epoch < nepoch; epoch++) {

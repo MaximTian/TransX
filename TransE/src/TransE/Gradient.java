@@ -9,6 +9,7 @@ import static TransE.Utils.sqr;
 public class Gradient {
 
     static double calc_sum(int e1, int e2, int rel) {
+        // 计算头实体、关系与尾实体之间的向量距离
         double sum = 0;
         if (L1_flag) {
             for (int i = 0; i < vector_len; i++) {
@@ -23,6 +24,7 @@ public class Gradient {
     }
 
     static double train_kb(int head_a, int tail_a, int relation_a, int head_b, int tail_b, int relation_b, double res) {
+        // 极大似然估计的计算过程
         double sum1 = calc_sum(head_a, tail_a, relation_a);
         double sum2 = calc_sum(head_b, tail_b, relation_b);
         if (sum1 + margin > sum2) {

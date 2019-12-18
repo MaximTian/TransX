@@ -9,6 +9,8 @@ public class GlobalValue {
     static double learning_rate = 0.02;
     static double margin = 0.1;
     static int method = 1;  // method = 1 means bern version, else unif version
+    static int nepoch = 1200;  // 迭代次数
+    static int nbatches = 150;  // batch 大小
 
     static String version = "bern";
     static int relation_num, entity_num;
