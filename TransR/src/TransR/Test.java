@@ -112,6 +112,8 @@ public class Test {
 
         int head_meanRank_raw = 0, tail_meanRank_raw = 0, head_meanRank_filter = 0, tail_meanRank_filter = 0;  // 在正确三元组之前的匹配距离之和
         int head_hits10 = 0, tail_hits10 = 0, head_hits10_filter = 0, tail_hits10_filter = 0;  // 在正确三元组之前的匹配个数之和
+        int relation_meanRank_raw = 0, relation_meanRank_filter = 0;
+        int relation_hits10 = 0, relation_hits10_filter = 0;
 
         // ------------------------ evaluation link predict ----------------------------------------
         System.out.printf("Total test triple = %s\n", fb_l.size());
@@ -181,6 +183,43 @@ public class Test {
                 (tail_meanRank_raw * 1.0) / fb_l.size(), (tail_meanRank_filter * 1.0) / fb_l.size());
         System.out.printf("Raw Hits@10: %.3f,  Filter Hits@10: %.3f\n",
                 (tail_hits10 * 1.0) / fb_l.size(), (tail_hits10_filter * 1.0) / fb_l.size());
+        // ------------------------ evaluation relation-linked predict ----------------------------------------
+        int relation_hits = 5;  // 选取hits@5为评价指标
+        for (int id = 0; id < fb_l.size(); id++) {
+            int head = fb_h.get(id);
+            int tail = fb_l.get(id);
+            int relation = fb_r.get(id);
+            List<Pair<Integer, Double>> relation_dist = new ArrayList<>();
+            for (int i = 0; i < relation_num; i++) {
+                double sum = calc_sum(head, tail, i);
+                relation_dist.add(new Pair<>(i, sum));
+            }
+            Collections.sort(relation_dist, (o1, o2) -> Double.compare(o1.b, o2.b));
+            int filter = 0;  // 统计匹配过程已有的正确三元组个数
+            for (int i = 0; i < relation_dist.size(); i++) {
+                int cur_relation = relation_dist.get(i).a;
+                if (hrt_isvalid(head, cur_relation, tail)) {  // 如果当前三元组是正确三元组，则记录到filter中
+                    filter += 1;
+                }
+                if (cur_relation == relation) {
+                    relation_meanRank_raw += i; // 统计小于<h, l, r>距离的数量
+                    relation_meanRank_filter += i - filter;
+                    if (i <= 5) {
+                        relation_hits10++;
+                    }
+                    if (i - filter <= 5) {
+                        relation_hits10_filter++;
+                    }
+                    break;
+                }
+            }
+        }
+        System.out.printf("-----relation prediction------\n");
+        System.out.printf("Raw MeanRank: %.3f,  Filter MeanRank: %.3f\n",
+                (relation_meanRank_raw * 1.0) / fb_r.size(), (relation_meanRank_filter * 1.0) / fb_r.size());
+        System.out.printf("Raw Hits@%d: %.3f,  Filter Hits@%d: %.3f\n",
+                relation_hits, (relation_hits10 * 1.0) / fb_r.size(),
+                relation_hits, (relation_hits10_filter * 1.0) / fb_r.size());
     }
 
 }
