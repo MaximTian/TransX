@@ -26,7 +26,7 @@ public class Test {
          * flag=true 表示该三元组关系正确
          */
         if (flag) {
-            TransE.Pair<Integer, Integer> key = new Pair<>(head, relation);
+            Pair<Integer, Integer> key = new Pair<>(head, relation);
             if (!head_relation2tail.containsKey(key)) {
                 head_relation2tail.put(key, new HashSet<>());
             }
@@ -49,22 +49,6 @@ public class Test {
                 vec[i][j] = Double.valueOf(line_split[j]);
             }
         }
-    }
-
-    private void relation_add(Map<Integer, Integer> relation_num, int relation) {
-        if (!relation_num.containsKey(relation)) {
-            relation_num.put(relation, 0);
-        }
-        int count = relation_num.get(relation);
-        relation_num.put(relation, count + 1);
-    }
-
-    private void map_add_value(Map<Integer, Integer> tmp_map, int id, int value) {
-        if (!tmp_map.containsKey(id)) {
-            tmp_map.put(id, 0);
-        }
-        int tmp_value = tmp_map.get(id);
-        tmp_map.put(id, tmp_value + value);
     }
 
     private boolean hrt_isvalid(int head, int relation, int tail) {
