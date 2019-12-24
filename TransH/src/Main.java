@@ -1,5 +1,5 @@
-import TransH.TestRun;
-import TransH.TrainRun;
+import TransH.TestPrepare;
+import TransH.TrainPrepare;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -13,10 +13,10 @@ public class Main {
         train_flag = sc.next().equals("y");
         if (train_flag) {
             System.out.println("Begin train");
-            TrainRun.train_run();
+            TrainPrepare.train_run();
         } else {
             System.out.println("Begin test");
-            TestRun.test_run();
+            TestPrepare.test_run();
         }
     }
 }

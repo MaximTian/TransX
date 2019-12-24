@@ -94,80 +94,77 @@ public class Test {
         Read_Vec_File("resource/result/entity2vec.bern", entity_vec);
         Read_Vec_File("resource/result/Wr_vec.bern", Wr_vec);
 
-        int lsum = 0, rsum = 0;
-        int lp_n = 0, rp_n = 0;
-        Map<Integer, Integer> lsum_r = new HashMap<>();
-        Map<Integer, Integer> rsum_r = new HashMap<>();
-        Map<Integer, Integer> lp_n_r = new HashMap<>();
-        Map<Integer, Integer> rp_n_r = new HashMap<>();
-        Map<Integer, Integer> rel_num = new HashMap<>();
+        int head_meanRank_raw = 0, tail_meanRank_raw = 0, head_meanRank_filter = 0, tail_meanRank_filter = 0;  // 在正确三元组之前的匹配距离之和
+        int head_hits10 = 0, tail_hits10 = 0, head_hits10_filter = 0, tail_hits10_filter = 0;  // 在正确三元组之前的匹配个数之和
 
-        File out_file = new File("resource/result/output_detail.txt");
-        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(out_file), "UTF-8");
-
-        System.out.printf("Total iterations = %s\n", fb_l.size());
+        // ------------------------ evaluation link predict ----------------------------------------
+        System.out.printf("Total test triple = %s\n", fb_l.size());
+        System.out.printf("The evaluation of link predict\n");
         for (int id = 0; id < fb_l.size(); id++) {
-            System.out.println(id);
             int head = fb_h.get(id);
             int tail = fb_l.get(id);
             int relation = fb_r.get(id);
-            relation_add(rel_num, relation);
             List<Pair<Integer, Double>> head_dist = new ArrayList<>();
             for (int i = 0; i < entity_num; i++) {
-                if (hrt_isvalid(i, relation, tail)) {
-                    continue;
-                }
                 double sum = calc_sum(i, tail, relation);
                 head_dist.add(new Pair<>(i, sum));
             }
             Collections.sort(head_dist, (o1, o2) -> Double.compare(o1.b, o2.b));
+            int filter = 0;  // 统计匹配过程已有的正确三元组个数
             for (int i = 0; i < head_dist.size(); i++) {
                 int cur_head = head_dist.get(i).a;
+                if (hrt_isvalid(cur_head, relation, tail)) {  // 如果当前三元组是正确三元组，则记录到filter中
+                    filter += 1;
+                }
                 if (cur_head == head) {
-                    lsum += i; // 统计小于<h, l, r>距离的数量
-                    map_add_value(lsum_r, relation, i);
+                    head_meanRank_raw += i; // 统计小于<h, l, r>距离的数量
+                    head_meanRank_filter += i - filter;
                     if (i <= 10) {
-                        lp_n++;
-                        map_add_value(lp_n_r, relation, 1);
+                        head_hits10++;
                     }
-                    String str = String.format("%s  %s  %s, dist=%f, %d\n\n", id2entity.get(head), id2relation.get(relation),
-                            id2entity.get(tail), calc_sum(head, tail, relation), i);
-                    writer.write(str);
-                    writer.flush();
+                    if (i - filter <= 10) {
+                        head_hits10_filter++;
+                    }
                     break;
-                } else {
-                    String temp_str = String.format("%s  %s  %s, dist=%f, %d\n", id2entity.get(cur_head), id2relation.get(relation),
-                            id2entity.get(tail), calc_sum(cur_head, tail, relation), i);
-                    writer.write(temp_str);
-                    writer.flush();
                 }
             }
 
+            filter = 0;
             List<Pair<Integer, Double>> tail_dist = new ArrayList<>();
             for (int i = 0; i < entity_num; i++) {
-                if (hrt_isvalid(head, relation, i)) {
-                    continue;
-                }
                 double sum = calc_sum(head, i, relation);
                 tail_dist.add(new Pair<>(i, sum));
             }
             Collections.sort(tail_dist, (o1, o2) -> Double.compare(o1.b, o2.b));
             for (int i = 0; i < tail_dist.size(); i++) {
                 int cur_tail = tail_dist.get(i).a;
+                if (hrt_isvalid(head, relation, cur_tail)) {
+                    filter++;
+                }
                 if (cur_tail == tail) {
-                    rsum += i;
-                    map_add_value(rsum_r, relation, i);
+                    tail_meanRank_raw += i;
+                    tail_meanRank_filter += i - filter;
                     if (i <= 10) {
-                        rp_n++;
-                        map_add_value(rp_n_r, relation, 1);
+                        tail_hits10++;
+                    }
+                    if (i - filter <= 10) {
+                        tail_hits10_filter++;
                     }
                     break;
                 }
             }
         }
-        System.out.printf("lsum = %s, tail number = %s\n", lsum, fb_l.size());
-        System.out.printf("left: %s\t%s\n", (lsum * 1.0) / fb_l.size(), (lp_n * 1.0) / fb_l.size());
-        System.out.printf("right: %s\t%s\n", (rsum * 1.0) / fb_h.size(), (rp_n * 1.0) / fb_h.size());
+        System.out.printf("-----head prediction------\n");
+        System.out.printf("Raw MeanRank: %.3f,  Filter MeanRank: %.3f\n",
+                (head_meanRank_raw * 1.0) / fb_l.size(), (head_meanRank_filter * 1.0) / fb_l.size());
+        System.out.printf("Raw Hits@10: %.3f,  Filter Hits@10: %.3f\n",
+                (head_hits10 * 1.0) / fb_l.size(), (head_hits10_filter * 1.0) / fb_l.size());
+
+        System.out.printf("-----tail prediction------\n");
+        System.out.printf("Raw MeanRank: %.3f,  Filter MeanRank: %.3f\n",
+                (tail_meanRank_raw * 1.0) / fb_l.size(), (tail_meanRank_filter * 1.0) / fb_l.size());
+        System.out.printf("Raw Hits@10: %.3f,  Filter Hits@10: %.3f\n",
+                (tail_hits10 * 1.0) / fb_l.size(), (tail_hits10_filter * 1.0) / fb_l.size());
     }
 
 }

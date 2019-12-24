@@ -29,7 +29,6 @@ public class Train {
 
     private void Write_Vec2File(String file_name, double[][] vec, int number) throws IOException {
         File f = new File(file_name);
-        File f = new File(file_name);
         if (!f.exists()) {	// if file does not exist, then create it
             File dir = new File(f.getParent());
             dir.mkdirs();
@@ -60,14 +59,14 @@ public class Train {
                     if (method == 0) {
                         pr = 500;
                     }
-                    if (rand() % 1000 < pr) {
+                    if (rand() % 1000 < pr) {  // 替换头实体
                         Pair<Integer, Integer> key = new Pair<>(fb_h.get(i), fb_r.get(i));
                         Set<Integer> values = head_relation2tail.get(key);  // 获取头实体和关系对应的尾实体集合
                         while (values.contains(j)) {
                             j = rand_max(entity_num);
                         }
                         res += train_kb(fb_h.get(i), fb_l.get(i), fb_r.get(i), j, fb_l.get(i), fb_r.get(i));
-                    } else {
+                    } else {  // 替换尾实体
                         Pair<Integer, Integer> key = new Pair<>(j, fb_r.get(i));
                         Set<Integer> values = head_relation2tail.get(key);
                         if (values != null) {
